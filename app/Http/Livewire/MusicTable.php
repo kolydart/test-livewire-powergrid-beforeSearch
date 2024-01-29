@@ -91,12 +91,15 @@ final class MusicTable extends PowerGridComponent
             ->addColumn('name')
 
            /** Example of custom column using a closure **/
-            ->addColumn('name_lower', fn (User $model) => strtolower(e($model->name)))
+            ->addColumn('name_lower', fn(User $model) => strtolower(e($model->name)))
 
-            ->addColumn('songs',fn ($model) => json_encode($model->songs))
+            ->addColumn('songs', fn($model) => json_encode($model->songs))
+            ->addColumn('song_name', function (User $model) {
+                return empty($model->songs) ? '' : html_entity_decode(json_decode($model->songs)->name);
+            })
             ->addColumn('email')
             ->addColumn('locale')
-            ->addColumn('created_at_formatted', fn (User $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
+            ->addColumn('created_at_formatted', fn(User $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
     }
 
     /*
@@ -108,11 +111,11 @@ final class MusicTable extends PowerGridComponent
     |
     */
 
-     /**
-      * PowerGrid Columns.
-      *
-      * @return array<int, Column>
-      */
+    /**
+     * PowerGrid Columns.
+     *
+     * @return array<int, Column>
+     */
     public function columns(): array
     {
         return [
@@ -121,7 +124,7 @@ final class MusicTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Songs', 'songs', 'songs')
+            Column::make('Song Title', 'song_name', 'songs')
                 ->sortable()
                 ->searchable(),
 
@@ -148,27 +151,22 @@ final class MusicTable extends PowerGridComponent
     {
         return [
             Filter::inputText('name')->operators(['contains']),
-            Filter::inputText('songs')->operators(['contains']),
+            Filter::inputText('songs', 'songs')->operators(['contains']),
             Filter::inputText('email')->operators(['contains']),
             Filter::inputText('locale')->operators(['contains']),
             Filter::datetimepicker('created_at'),
         ];
     }
 
-    public function beforeSearch(string $field = null, string $search = null)
+    public function beforeSearchSongs(string $search)
     {
-        dd('it works!');
+       
+        // Encode to Unicode and remove json enclosing.
+        $search = trim(ltrim(rtrim(json_encode([$search]), '"]'), '["'));
 
-        if ($field === 'songs') {
-            // Encode to Unicode and remove json enclosing.
-            $search = trim(ltrim(rtrim(json_encode([$search]), '"]'), '["'));
-
-            //Triple escape backlashes
-            $search = preg_replace('/\\\\/', '\\\\\\\\\\', $search);
-
-            return $search;
-        }
+        //Triple escape backlashes
+        $search = preg_replace('/\\\\/', '\\\\\\\\\\', $search);
 
         return $search;
     }
- }
+}
