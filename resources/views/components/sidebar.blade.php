@@ -41,6 +41,15 @@
                     </a>
                 </li>
 
+                @can('user_access')
+                    <li class="items-center">
+                        <a class="{{ request()->is("admin/users*") ? "sidebar-nav-active" : "sidebar-nav" }}" href="{{ route("admin.users.index") }}">
+                            <i class="fa-fw c-sidebar-nav-icon fas fa-user">
+                            </i>
+                            {{ trans('cruds.user.title') }}
+                        </a>
+                    </li>
+                @endcan
                 @can('user_management_access')
                     <li class="items-center">
                         <a class="has-sub {{ request()->is("admin/permissions*")||request()->is("admin/roles*")||request()->is("admin/users*") ? "sidebar-nav-active" : "sidebar-nav" }}" href="#" onclick="window.openSubNav(this)">
@@ -64,15 +73,6 @@
                                         <i class="fa-fw c-sidebar-nav-icon fas fa-briefcase">
                                         </i>
                                         {{ trans('cruds.role.title') }}
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('user_access')
-                                <li class="items-center">
-                                    <a class="{{ request()->is("admin/users*") ? "sidebar-nav-active" : "sidebar-nav" }}" href="{{ route("admin.users.index") }}">
-                                        <i class="fa-fw c-sidebar-nav-icon fas fa-user">
-                                        </i>
-                                        {{ trans('cruds.user.title') }}
                                     </a>
                                 </li>
                             @endcan
