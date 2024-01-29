@@ -16,8 +16,7 @@
                 @endcan
             </div>
         </div>
-        @livewire('user.index')
-
+        <livewire:music-table/>
     </div>
 </div>
 @endsection

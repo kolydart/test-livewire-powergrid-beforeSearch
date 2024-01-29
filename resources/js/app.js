@@ -4,6 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+import './../../vendor/power-components/livewire-powergrid/dist/powergrid'
+
 require('./bootstrap')
 
 /* Sidebar - Side navigation menu on mobile/responsive mode */
@@ -45,3 +47,4 @@ window.openDropdown = function openDropdown(event, dropdownID) {
     fetch('/admin/user-alerts/seen')
   }
 }
+
