@@ -22,5 +22,10 @@ class UsersTableSeeder extends Seeder
         ];
 
         User::insert($users);
+
+        User::factory(40)->create()->each(function($row){
+            $row->songs = ['name' => fake(locale:'el_GR')->name(), 'title',fake()->words(3,true)];
+            $row->save();
+        });
     }
 }
